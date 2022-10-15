@@ -1,4 +1,12 @@
 <?php
+
+header('Access-Control-Allow-Origin: *');
+
+header('Access-Control-Allow-Methods: GET, POST');
+
+header("Access-Control-Allow-Headers: X-Requested-With");
+
+
 require_once('./data/dataObject.php');
 
 $limit = 5;
@@ -21,21 +29,12 @@ if($offset>0) {
 }
 
 
-var_dump([
+echo json_encode([
     'status' => 'success',
     '_links' => $links,
     'results' => array_slice($data, $offset, $limit),
     'count' => count($data),
     'curr'
 ]);
-
-
-// echo json_encode([
-//     'status' => 'success',
-//     '_links' => $links,
-//     'results' => array_slice($data, $offset, $limit),
-//     'count' => count($data),
-//     'curr'
-// ]);
 
 

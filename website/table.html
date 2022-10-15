@@ -1,27 +1,90 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <script>
-        $.ajax({
-            ''
-        })
-    </script>
-    
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: monospace;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            table {
+                border-collapse: collapse;
+            }
+            table th,
+            table td {
+                border: 1px solid black;
+                padding: 5px;
+            }
+            table th {
+                background-color: darkblue;
+                color: white;
+            }
+            table td {
+                border: 1px solid black;
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>Table with Custom Pagination</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="table-footer"></div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+        <script>
+            let baseUrl = "http://localhost/projects/datatables/customPaginationPhpNode/api/php/api.php";
+
+            function getData(limit = 5, offset = 0) {
+                $('table tbody').html("");
+                $('.table-footer').html("");
+                $.ajax({
+                    url: `${baseUrl}?limit=${limit}&offset=${offset}`,
+                    dataType: 'json',
+                    success: function (data, status, xhr) {
+                        console.log(data);
+                        let html = '';
+                        if (data.count > 0) {
+                            data.results.forEach(row => {
+                                html += `<tr><td>${
+                                    row.id
+                                }</td><td>${
+                                    row.title
+                                }</td></tr>`;
+                            });
+                        }
+                        $('table tbody').append(html);
+                        let buttons = "";
+                        for(let i=0;i<(data.count/limit);i++) {
+                            buttons += `<button onclick="getData(${limit}, ${limit*i})">${i+1}</button>`
+                        }
+                        $('.table-footer').append(buttons);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        console.log('Error: ' + errorMessage);
+                    }
+                });
+
+            }
+
+            getData(5, 0);
+        </script>
+
+    </body>
 </html>
